@@ -3,6 +3,7 @@
  */
 
 var express = require("express");
+var bodyParser = require("body-parser");
 var mongoose = require("mongoose");
 var cors = require("cors");
 
@@ -19,12 +20,25 @@ var person = mongoose.model("Person", personSchema, "people");
 
 var app = express();
 app.use(cors());
+app.use(bodyParser.json());
 
-app.get("/people", function(req, res) {
-    person.find(function(err, doc) {
+app.get("/people", function (req, res) {
+    person.find().select("firstName").limit(10).exec(function (err, doc) {
         console.log("Received request to get people");
         res.send(doc);
     })
+});
+
+app.post("/people", function (req, res) {
+    person.update({_id: req.body._id}, {firstName: req.body.firstName}, function (err) {
+        res.send(req.body)
+    })
+});
+
+app.get("/people/:id", function(req,res) {
+   person.findById(req.params.id, function (err, doc) {
+       res.send(doc);
+   })
 });
 
 app.listen(8888);
