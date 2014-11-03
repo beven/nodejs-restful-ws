@@ -1,2 +1,3 @@
-First API with Node.js, Express and MongoDB
-===========================================
+Node.js restful webservice
+================================================
+An application with Node.js, Express and MongoDB
