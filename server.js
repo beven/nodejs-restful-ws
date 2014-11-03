@@ -22,23 +22,24 @@ var app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-app.get("/people", function (req, res) {
-    person.find().select("firstName").limit(10).exec(function (err, doc) {
-        console.log("Received request to get people");
+app.route("/people")
+    .get(function (req, res) {
+        person.find().select("firstName").limit(10).exec(function (err, doc) {
+            console.log("Received request to get people");
+            res.send(doc);
+        })
+    })
+
+    .post(function (req, res) {
+        person.update({_id: req.body._id}, {firstName: req.body.firstName}, function (err) {
+            res.send(req.body)
+        })
+    });
+
+app.get("/people/:id", function (req, res) {
+    person.findById(req.params.id, function (err, doc) {
         res.send(doc);
     })
-});
-
-app.post("/people", function (req, res) {
-    person.update({_id: req.body._id}, {firstName: req.body.firstName}, function (err) {
-        res.send(req.body)
-    })
-});
-
-app.get("/people/:id", function(req,res) {
-   person.findById(req.params.id, function (err, doc) {
-       res.send(doc);
-   })
 });
 
 app.listen(8888);
